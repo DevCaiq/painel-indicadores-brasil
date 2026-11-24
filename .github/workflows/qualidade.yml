@@ -62,6 +62,10 @@ jobs:
         run: |
           node -e "const versao = require('@playwright/test/package.json').version; if (versao !== '1.65.1') throw new Error('Atualize a imagem Playwright para a versão do lock: ' + versao); console.log('Imagem e Playwright compatíveis: ' + versao);"
       - name: Verificar interface com servidor offline
-        run: npm run verificar:navegador
+        run: |
+          # O runner monta este diretorio com UID diferente do processo no container.
+          # Firefox exige que o diretorio de usuario pertença ao usuario atual.
+          chown "$(id -u):$(id -g)" /github/home
+          npm run verificar:navegador
       - name: Construir e instalar wheel isolado
         run: uv run --frozen python scripts/verificar_pacote.py
