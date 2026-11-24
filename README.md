@@ -1,6 +1,6 @@
 # Indicadores do Brasil
 
-Painel Python independente da pipeline: cards globais, históricos, agregados mensais/anuais, IPCA em 12 meses, frescor, cache e exportação CSV. P1–P4 implementadas; refinamento e automação local da P5 entregues, com execução remota do CI pendente. [Sistema de design](docs/sistema-de-design.md) e [aceite](docs/aceite-mvp.md).
+Painel Python independente da pipeline: cards globais, históricos, agregados mensais/anuais, IPCA em 12 meses, frescor, cache e exportação CSV. P1–P5 implementadas, com validação local e CI remoto aprovados. [Sistema de design](docs/sistema-de-design.md) e [aceite e limitações](docs/aceite-mvp.md).
 
 ## Preparar
 
@@ -63,7 +63,7 @@ Testes offline. Amostras públicas reais em `testes/amostras`, com arquivos de o
 
 Os comandos de navegador e pacote acima pertencem à verificação. O servidor de testes usa a porta 8503, dados sintéticos identificados e MockTransport; não consulta a API. Recusa uma porta ocupada e encerra somente o processo que iniciou. Capturas e traces ficam no diretório temporário do sistema. Construir os assets antes de verificar o pacote: o script instala o wheel em ambiente temporário fora do código-fonte e confere páginas, templates, CSS, JS e licença Plotly.
 
-O workflow próprio em `.github/workflows/qualidade.yml` executa instalação pelos locks, testes, lint, tipos, build, navegadores e pacote em Python 3.12/Node 24. Não usa banco, credenciais ou publicação. Sua execução no GitHub depende de envio autorizado a um repositório; os comandos locais não substituem esse evento remoto.
+O workflow próprio em `.github/workflows/qualidade.yml` executa instalação pelos locks, testes, lint, tipos, build, navegadores e pacote em Python 3.12/Node 24. Usa a imagem oficial Playwright 1.65.1, fixada por digest, com navegadores e bibliotecas já incluídos. Ao atualizar o Playwright no lock, atualizar também a imagem e a conferência de versão do workflow. Não exige banco ou secrets adicionais e não faz deploy. [Execução remota aprovada em 24/11/2026](https://github.com/DevCaiq/painel-indicadores-brasil/actions/runs/45481451707).
 
 ## Limites e próximos passos
 

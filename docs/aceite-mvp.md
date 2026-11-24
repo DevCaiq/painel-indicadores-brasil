@@ -1,6 +1,6 @@
 # Aceite técnico do MVP
 
-Registro local de 23/11/2026, conforme o plano principal. P1–P4 implementadas; P5 com refinamento, testes e workflow preparados. O encerramento integral do critério “workflow executado” depende de uma execução real no GitHub, após publicação autorizada. Nenhum repositório ou recurso foi publicado nesta entrega.
+Registro local de 23/11/2026, complementado pelo aceite remoto em 24/11/2026, conforme o plano principal. P1–P5 implementadas e verificadas. O envio ao repositório foi autorizado pelo usuário; o critério “workflow executado” foi atendido pela [execução 45481451707](https://github.com/DevCaiq/painel-indicadores-brasil/actions/runs/45481451707), no commit `28a0b34a8f533079a0ba15b837ca249e1ceaa9b4`. O site não foi implantado.
 
 ## Evidências
 
@@ -21,12 +21,18 @@ A suíte verifica quatro cards, independência entre valores globais e filtros, 
 
 O refinamento corrigiu mensagens de erro ligadas aos campos, motivos conhecidos em linguagem compreensível, períodos sem valores completos preservados em tabela sem eixos vazios e escape de unidade externa nos gráficos. O resumo de erros transfere foco ao campo de data também no Firefox; o atalho de pular conteúdo entra explicitamente na sequência de Tab também no WebKit. Capturas de 375 e 1440 px foram inspecionadas visualmente. O empacotamento inclui explicitamente os assets gerados, mesmo quando ignorados pelo versionamento.
 
+## Validação remota
+
+O CI aprovou instalação pelos locks, build npm, 161 testes Python, Ruff, formatação, mypy, sintaxe JavaScript, 28 testes de navegador (2 ignorados intencionalmente) e o wheel instalado fora do código-fonte. Os testes de navegador concluíram em 44,1 segundos, com Chromium, Firefox e WebKit.
+
+A execução anterior atingiu o limite de 20 minutos durante downloads de bibliotecas Ubuntu. O workflow passou a usar a [imagem oficial Playwright](https://playwright.dev/docs/docker), versão 1.65.1, digest `sha256:1507cbfc550a63a6b7396791ca4f00df17beb56342d2447b3f106c306f525579`, com navegadores e dependências incluídos. Uma verificação exige a mesma versão resolvida pelo lock. A propriedade de `/github/home`, montado pelo runner, é alinhada ao usuário do processo para permitir iniciar o Firefox. Essas configurações pertencem somente ao contêiner temporário de testes do CI.
+
 ## Operação e limites
 
 Inicialização, construção e comandos de verificação estão no [README](../README.md). Usar inicialmente um processo: cache, chave CSRF e limitação de atualização não são coordenados entre réplicas. A atualização renova consultas, sem coletar dados ou disparar ETL. Falhas e incompletude permanecem explícitas; o painel não preenche datas ausentes ou converte valores nulos em zero.
 
 As consultas reais das etapas anteriores estão registradas em [P2](validacao-p2.json) e [P4](validacao-p4.json). São evidências históricas; não representam os dados atuais nem os dados sintéticos dos testes. Nesta etapa não foi necessário acessar banco ou alterar o produtor.
 
-Pendências de validação externa: execução remota do workflow, revisão com leitor de tela humano e dispositivos físicos. Axe e árvore acessível fornecem evidência automatizada parcial; WebKit não equivale a Safari físico. A aprovação técnica local não afirma essas validações externas.
+Pendências de validação externa: revisão com leitor de tela humano e dispositivos físicos. Axe e árvore acessível fornecem evidência automatizada parcial; WebKit não equivale a Safari físico. A aprovação técnica local e remota não afirma essas validações manuais.
 
 O TestClient emite aviso conhecido de depreciação da integração httpx/Starlette; não houve falha nos testes. A instalação npm informou script opcional de `@parcel/watcher` sem aprovação, mas o build foi concluído sem liberar scripts adicionais. No ambiente gerenciado desta sessão, Firefox precisou de execução de ferramenta fora do sandbox de processos; nenhuma proteção do aplicativo ou preferência de segurança do navegador foi desativada.
