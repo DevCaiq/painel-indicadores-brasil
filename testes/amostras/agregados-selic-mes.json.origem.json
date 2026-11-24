@@ -1,0 +1,5 @@
+{
+  "origem": "http://127.0.0.1:8000/api/v1/series/432/agregados?de=2026-01-01&ate=2026-11-23&granularidade=mes&limite=1000",
+  "instante_utc": "2026-11-24T01:33:34.643887+00:00",
+  "sha256": "59149e905800702709b18274526b40ceb7541220db172c351ed895a9a5b50a17"
+}

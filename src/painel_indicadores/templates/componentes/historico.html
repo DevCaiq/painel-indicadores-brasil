@@ -1,0 +1,33 @@
+<section class="painel-superficie historico" aria-labelledby="titulo-historico">
+  <div class="cabecalho-secao">
+    <div><div class="legenda-serie serie-{{ p.selecionado.codigo }}"><span class="marca-serie" aria-hidden="true"></span>{{ p.modo }}</div>
+      <h2 id="titulo-historico">{{ p.selecionado.nome }}</h2>
+      <p class="texto-auxiliar">{{ valores.de[8:10] }}/{{ valores.de[5:7] }}/{{ valores.de[:4] }} a {{ valores.ate[8:10] }}/{{ valores.ate[5:7] }}/{{ valores.ate[:4] }} · {{ p.selecionado.unidade }}</p>
+    </div>
+    {% if p.grafico %}<div class="controles-grafico" aria-label="Controles do gráfico" hidden>
+      <button type="button" class="botao botao-secundario" data-zoom="0.5" aria-label="Aproximar gráfico">+</button>
+      <button type="button" class="botao botao-secundario" data-zoom="2" aria-label="Afastar gráfico">−</button>
+      <button type="button" class="botao botao-secundario" id="restaurar-grafico" data-restaurar>Restaurar</button>
+    </div>{% endif %}
+  </div>
+  {% for aviso in p.avisos %}<p class="mensagem mensagem-aviso">{{ aviso }}</p>{% endfor %}
+  {% if p.erro %}
+    <div class="estado-painel mensagem-erro"><h3>Histórico indisponível</h3><p>{{ p.erro }}</p><a href="#formulario-filtros" class="botao botao-secundario">Revisar filtros e tentar novamente</a></div>
+  {% elif not p.observacoes %}
+    <div class="estado-painel"><span class="simbolo-vazio" aria-hidden="true">—</span><h3>{{ 'Não há dados para o período' if p.conjunto and p.conjunto.consulta_completa else 'O período não pôde ser consultado por completo' }}</h3><p>Selecione outro intervalo para explorar as observações disponíveis.</p><a href="/?codigo={{ p.selecionado.codigo }}&periodo=tudo" class="botao botao-secundario">Ver histórico desde 2020</a></div>
+  {% else %}
+    {% if p.grafico %}
+    <div id="grafico" class="grafico" role="img" aria-label="Histórico de {{ p.selecionado.nome }} em {{ p.selecionado.unidade }}. Valores completos disponíveis na tabela abaixo." aria-describedby="resumo-grafico"></div>
+    <script id="dados-grafico" type="application/json">{{ p.grafico | tojson }}</script>
+    <p id="erro-grafico" class="mensagem mensagem-aviso" data-erro-grafico hidden>O gráfico não pôde ser exibido. Consulte os valores na tabela abaixo.</p>
+    <noscript><p class="mensagem mensagem-informacao">Ative JavaScript para explorar o gráfico. Todos os valores estão disponíveis na tabela.</p></noscript>
+    {% else %}<p class="mensagem mensagem-informacao">Não há valores completos para desenhar neste recorte. Consulte a condição dos períodos na tabela.</p>{% endif %}
+    <p id="resumo-grafico" class="resumo-grafico">{{ p.metricas.observacoes }} {{ ('observação' if p.metricas.observacoes == 1 else 'observações') if p.visualizacao == 'observacoes' else ('período' if p.metricas.observacoes == 1 else 'períodos') }} no recorte. Primeiro valor: {{ p.metricas.primeiro | decimal_br(4 if p.selecionado.codigo == 1 else 2) }}{% if p.metricas.primeiro is not none %} {{ p.selecionado.unidade }}{% endif %}; último: {{ p.metricas.ultimo | decimal_br(4 if p.selecionado.codigo == 1 else 2) }}{% if p.metricas.ultimo is not none %} {{ p.selecionado.unidade }}{% endif %}. Não são preenchidas datas sem observação.</p>
+    <div class="metricas" aria-label="Métricas do período filtrado">
+      {% for titulo, valor in [('Primeiro valor', p.metricas.primeiro), ('Último valor', p.metricas.ultimo), ('Mínimo', p.metricas.minimo), ('Máximo', p.metricas.maximo)] %}
+      <div><span>{{ titulo }}</span><strong>{{ valor | decimal_br(4 if p.selecionado.codigo == 1 else 2) }}{% if valor is not none %} <small>{{ p.selecionado.unidade }}</small>{% endif %}</strong></div>
+      {% endfor %}
+    </div>
+    <p class="nota-metricas">Métricas apenas do período filtrado{% if not p.metricas.consulta_completa %} · conjunto incompleto{% endif %}.</p>
+  {% endif %}
+</section>

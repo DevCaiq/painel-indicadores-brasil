@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<header class="cabecalho-pagina">
+  <div class="conteiner cabecalho-interno">
+    <div><h1>Indicadores do Brasil</h1><p>Selic, inflação e câmbio. Dados para entender o contexto.</p></div>
+    <div class="acoes-cabecalho"><nav aria-label="Navegação principal"><a href="#fontes">Sobre os dados</a><a class="link-projeto" href="https://github.com/DevCaiq/pipeline-etl-indicadores-brasil" target="_blank" rel="noopener noreferrer">Projeto no GitHub <span class="sr-only">(abre em nova aba)</span></a></nav>{% if status_api is not none %}<p class="estado-api {{ 'api-disponivel' if status_api else 'api-indisponivel' }}">{{ 'API respondendo' if status_api else 'API indisponível' }} <span>· saúde do processo</span></p>{% endif %}</div>
+  </div>
+</header>
+<main id="conteudo" class="conteiner conteudo-principal" tabindex="-1">
+  {% if p %}{% include "componentes/cards.html" %}{% endif %}
+  {% include "componentes/filtros.html" %}
+  {% if p %}
+    {% include "componentes/historico.html" %}
+    {% include "componentes/tabela.html" %}
+    {% include "componentes/ipca_12m.html" %}
+  {% endif %}
+  <section class="fontes" id="fontes" aria-labelledby="titulo-fontes">
+    <div><h2 id="titulo-fontes">Fontes e metodologia</h2><p>Dados distribuídos pelo Banco Central do Brasil, via SGS. O IPCA é produzido pelo IBGE. O dólar representa uma observação histórica de venda, sem cotação em tempo real.</p><p>A meta Selic é diferente da taxa efetiva diária. Variações de Selic e IPCA são comparadas em pontos percentuais; alta ou queda não indica, por si só, melhora econômica.</p></div>
+    <div class="atualizacao"><h3>Referências de atualização</h3><dl>
+      <div><dt>Condição de frescor</dt><dd>{% if p and p.frescor and not p.frescor_meta.desatualizado %}{{ 'Defasado' if p.frescor.defasado is true else 'Sem defasagem sinalizada' if p.frescor.defasado is false else 'Desconhecido' }}{% else %}Desconhecido{% endif %}</dd></div>
+      <div><dt>Referência da série</dt><dd>{% if p and p.frescor and p.frescor.ultima_referencia %}{{ p.frescor.ultima_referencia.strftime('%m/%Y' if p.selecionado.codigo == 433 else '%d/%m/%Y') }}{% else %}Não informada{% endif %}</dd></div>
+      <div><dt>Última consulta da pipeline</dt><dd>{{ p.frescor.ultima_consulta | data_br if p and p.frescor else 'Não informada' }}</dd></div>
+      <div><dt>Última publicação da pipeline</dt><dd>{{ p.frescor.ultima_publicacao | data_br if p and p.frescor else 'Não informada' }}</dd></div>
+      {% if p and p.visualizacao != 'observacoes' and p.conjunto %}<div><dt>Publicação gold</dt><dd>{{ p.conjunto.meta.data_publicacao | data_br }} (data)</dd></div>{% endif %}
+      <div><dt>Consulta pelo painel</dt><dd>{{ p.consultado_em | data_br if p else 'Não informada' }}</dd></div>
+      <div><dt>Página gerada</dt><dd>{{ gerada_em }}</dd></div><div><dt>Reuso das consultas</dt><dd>Cache de até {{ validade_cache | round(0, 'ceil') | int }} segundos</dd></div>
+    </dl><p>Consulta e geração da página não são horários de publicação da fonte. A API respondendo não confirma cobertura completa nem atualização dos dados.</p>{% if p and p.frescor %}<p>{{ 'Calendário homologado.' if p.frescor.calendario_homologado else 'Calendário não homologado; preserve a incerteza da política de frescor.' }}{% if p.frescor.motivo %} {{ p.frescor.motivo | motivo_br }}{% endif %}</p>{% endif %}</div>
+  </section>
+</main>
+<footer class="rodape-pagina"><div class="conteiner"><span>Indicadores do Brasil</span><span>Dados públicos · Referências explícitas · {{ ano }}</span></div></footer>
+{% endblock %}

@@ -1,0 +1,30 @@
+{
+  "instante_utc": "2026-11-23T20:46:04.180043+00:00",
+  "origem": "http://127.0.0.1:8000",
+  "tipo": "smoke real separado dos testes offline",
+  "pedidos_primeiro_panorama": 6,
+  "pedidos_adicionais_repeticao": 0,
+  "historicos": [
+    {
+      "codigo": 432,
+      "registros": 2519,
+      "versao_core": 25,
+      "ultimo_valor": "13,75",
+      "referencia": "2026-11-23"
+    },
+    {
+      "codigo": 433,
+      "registros": 82,
+      "versao_core": 25,
+      "ultimo_valor": "0,14",
+      "referencia": "2026-10-01"
+    },
+    {
+      "codigo": 1,
+      "registros": 1728,
+      "versao_core": 25,
+      "ultimo_valor": "5,89",
+      "referencia": "2026-11-19"
+    }
+  ]
+}

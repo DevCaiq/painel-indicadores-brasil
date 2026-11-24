@@ -1,0 +1,13 @@
+{% if p.observacoes %}
+<section class="painel-superficie tabela-dados" aria-labelledby="titulo-tabela" id="tabela">
+  <div class="cabecalho-secao"><div><h2 id="titulo-tabela">Dados do período</h2><p class="texto-auxiliar">Os mesmos registros do gráfico, em detalhe.</p></div>{% if p.exportavel %}<a class="botao botao-secundario" href="{{ p.url_csv }}">Baixar CSV completo</a>{% else %}<span class="nota-fonte">Exportação indisponível: consulta incompleta.</span>{% endif %}</div>
+  <div class="rolagem-tabela" role="region" aria-label="Tabela de observações, com rolagem" tabindex="0">
+    <table>
+      <caption class="sr-only">{{ p.selecionado.nome }} — {{ p.selecionado.unidade }} — {{ p.faixa }} registros</caption>
+      <thead><tr><th scope="col">Referência</th><th scope="col" class="numero">Valor</th><th scope="col">Unidade</th>{% if p.visualizacao != 'observacoes' %}<th scope="col">Condição do período</th>{% endif %}</tr></thead>
+      <tbody>{% for linha in p.linhas %}<tr><th scope="row">{{ linha.data.strftime('%Y' if p.visualizacao == 'ano' else '%m/%Y' if p.visualizacao == 'mes' or p.selecionado.codigo == 433 else '%d/%m/%Y') }}</th><td class="numero">{{ linha.valor | decimal_br(4 if p.selecionado.codigo == 1 else 2) }}</td><td>{{ p.selecionado.unidade }}</td>{% if p.visualizacao != 'observacoes' %}<td title="{{ linha.motivo or '' }}">{{ 'Parcial' if linha.parcial else 'Completo' if linha.completo is true else 'Incompleto' if linha.completo is false else 'Cobertura não confirmada' }}{% if linha.motivo %} · {{ linha.motivo | motivo_br }}{% endif %}</td>{% endif %}</tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  <div class="rodape-tabela"><span>Exibindo {{ p.faixa }}</span><nav aria-label="Páginas da tabela">{% for item in p.navegacao %}<a href="{{ item.url }}"{% if item.numero == p.pagina_tabela %} aria-current="page"{% endif %} aria-label="Página {{ item.numero }} da tabela">{{ item.numero }}</a>{% endfor %}</nav></div>
+</section>
+{% endif %}

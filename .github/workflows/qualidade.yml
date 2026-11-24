@@ -1,0 +1,62 @@
+name: Qualidade do painel
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    name: Testes offline, navegador e pacote
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      UV_PYTHON: '3.12'
+      UV_NO_PROGRESS: '1'
+      CI: 'true'
+    steps:
+      - name: Obter código
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Preparar Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - name: Preparar Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Preparar uv
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: '0.13.9'
+          enable-cache: false
+      - name: Instalar dependências pelos locks
+        run: |
+          uv sync --frozen
+          npm ci
+      - name: Construir assets locais
+        run: npm run construir
+      - name: Verificar Python
+        run: |
+          uv run --frozen pytest
+          uv run --frozen ruff check .
+          uv run --frozen ruff format --check .
+          uv run --frozen mypy src
+      - name: Verificar sintaxe JavaScript
+        run: |
+          node --check frontend/painel.js
+          node --check scripts/preparar-estaticos.mjs
+          node --check playwright.config.mjs
+          find testes/navegador -name '*.mjs' -exec node --check {} \;
+      - name: Instalar navegadores de teste
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Verificar interface com servidor offline
+        run: npm run verificar:navegador
+      - name: Construir e instalar wheel isolado
+        run: uv run --frozen python scripts/verificar_pacote.py

@@ -1,0 +1,74 @@
+{
+  "instante_utc": "2026-11-24T01:52:13.601298+00:00",
+  "origem": "http://127.0.0.1:8000",
+  "tipo": "smoke real separado dos testes offline",
+  "agregados": [
+    {
+      "codigo": 432,
+      "visualizacao": "mes",
+      "registros": 83,
+      "sem_valor": 0,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    },
+    {
+      "codigo": 432,
+      "visualizacao": "ano",
+      "registros": 7,
+      "sem_valor": 0,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    },
+    {
+      "codigo": 433,
+      "visualizacao": "mes",
+      "registros": 82,
+      "sem_valor": 0,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    },
+    {
+      "codigo": 433,
+      "visualizacao": "ano",
+      "registros": 7,
+      "sem_valor": 1,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    },
+    {
+      "codigo": 1,
+      "visualizacao": "mes",
+      "registros": 83,
+      "sem_valor": 0,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    },
+    {
+      "codigo": 1,
+      "visualizacao": "ano",
+      "registros": 7,
+      "sem_valor": 0,
+      "versao_gold": 25,
+      "desatualizado": false,
+      "data_publicacao": "2026-11-23"
+    }
+  ],
+  "ipca12m_periodos": 82,
+  "frescor_series": [
+    1,
+    432,
+    433
+  ],
+  "pedidos_somente_get": 8,
+  "csv": {
+    "codificacao": "UTF-8 com BOM",
+    "separador": ";",
+    "decimal": "ponto, sem float",
+    "exportacoes_integrais_conferidas": 6
+  }
+}

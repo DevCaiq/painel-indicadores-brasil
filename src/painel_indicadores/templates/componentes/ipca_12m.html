@@ -1,0 +1,18 @@
+{% if p.ipca_12m %}
+<section class="painel-superficie historico" aria-labelledby="titulo-ipca12">
+  <div class="cabecalho-secao"><div><h2 id="titulo-ipca12">IPCA em 12 meses</h2><p class="texto-auxiliar">Inflação composta publicada pela pipeline · mesmo recorte de datas</p></div>{% if p.ipca_12m.completa %}<a class="botao botao-secundario" href="{{ p.url_csv_12 }}">Baixar CSV de IPCA em 12 meses</a>{% endif %}</div>
+  {% if p.ipca_12m.meta and p.ipca_12m.meta.desatualizado %}<p class="mensagem mensagem-aviso">Gold desatualizada: {{ p.ipca_12m.meta.motivo | motivo_br or 'há dados mais recentes na base.' }}</p>{% endif %}
+  {% if not p.ipca_12m.completa %}<p class="mensagem mensagem-aviso">{{ 'Consulta incompleta:' if p.ipca_12m.meta else 'Indicador indisponível:' }} {{ p.ipca_12m.aviso }}</p>{% endif %}
+  <p class="texto-auxiliar">Valores nulos, incompletos ou parciais aparecem como lacunas; não são substituídos por zero.</p>
+  {% if p.ipca_12m.linhas %}
+  {% if p.ipca_12m.grafico %}
+  <div class="controles-grafico" hidden><button type="button" class="botao botao-secundario" data-zoom="0.5" aria-label="Aproximar gráfico de IPCA em 12 meses">+</button><button type="button" class="botao botao-secundario" data-zoom="2" aria-label="Afastar gráfico de IPCA em 12 meses">−</button><button type="button" class="botao botao-secundario" data-restaurar>Restaurar</button></div>
+  <div id="grafico-ipca12" class="grafico" role="img" aria-label="IPCA em 12 meses; valores e motivos disponíveis na tabela desta seção."></div>
+  <script id="dados-ipca12" type="application/json">{{ p.ipca_12m.grafico | tojson }}</script>
+  <p class="mensagem mensagem-aviso" data-erro-grafico hidden>O gráfico não pôde ser exibido. Consulte a tabela de IPCA em 12 meses.</p>
+  <noscript><p class="mensagem mensagem-informacao">Os valores estão disponíveis na tabela abaixo.</p></noscript>
+  {% else %}<p class="mensagem mensagem-informacao">Não há valores completos de IPCA em 12 meses neste recorte. Consulte a tabela.</p>{% endif %}
+  <details class="detalhes-ipca"><summary>Ver tabela de IPCA em 12 meses ({{ p.ipca_12m.linhas|length }} períodos)</summary><div class="rolagem-tabela" role="region" aria-label="Tabela de IPCA em 12 meses" tabindex="0"><table><caption class="sr-only">Inflação composta em doze meses, com condição de cada período</caption><thead><tr><th scope="col">Mês</th><th scope="col">% em 12 meses</th><th scope="col">Condição</th></tr></thead><tbody>{% for linha in p.ipca_12m.linhas %}<tr><th scope="row">{{ linha.data.strftime('%m/%Y') }}</th><td>{{ linha.valor | decimal_br }}</td><td>{{ 'Parcial' if linha.parcial else 'Completo' if linha.completo is true and linha.valor is not none else 'Incompleto' }}{% if linha.motivo %} · {{ linha.motivo | motivo_br }}{% endif %}</td></tr>{% endfor %}</tbody></table></div></details>
+  {% else %}<p class="estado-painel">Não há períodos de IPCA em 12 meses disponíveis neste recorte.</p>{% endif %}
+</section>
+{% endif %}

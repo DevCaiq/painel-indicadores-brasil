@@ -1,0 +1,5 @@
+{
+  "origem": "http://127.0.0.1:8000/api/v1/indicadores/ipca-12m?de=2020-01-01&ate=2026-11-23&limite=1000",
+  "instante_utc": "2026-11-24T01:33:34.669882+00:00",
+  "sha256": "3d1911fcbc45477cc22bc827147eff4fb5a99a6fd7c49355d4c5dc5671504853"
+}

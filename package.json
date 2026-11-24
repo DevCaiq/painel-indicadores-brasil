@@ -1,0 +1,18 @@
+{
+  "name": "painel-indicadores-brasil",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "construir": "node scripts/preparar-estaticos.mjs && tailwindcss -i frontend/estilos.css -o src/painel_indicadores/estaticos/painel.css --minify",
+    "verificar:navegador": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/cli": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "dependencies": {
+    "plotly.js-dist-min": "^3.0.0"
+  }
+}

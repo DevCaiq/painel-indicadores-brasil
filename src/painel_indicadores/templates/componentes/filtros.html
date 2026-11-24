@@ -1,0 +1,35 @@
+{% macro atributos_erro(campo) %}{% if campo in erros_campos %} aria-invalid="true" aria-describedby="erro-{{ campo }}"{% endif %}{% endmacro %}
+{% macro mensagem_erro(campo) %}{% if campo in erros_campos %}<p class="erro-campo" id="erro-{{ campo }}">{{ erros_campos[campo] }}</p>{% endif %}{% endmacro %}
+<section class="painel-superficie filtros" aria-labelledby="titulo-filtros">
+  <div class="cabecalho-secao">
+    <div><h2 id="titulo-filtros">Explore o histórico</h2><p class="texto-auxiliar">Escolha uma série e um período de observações.</p></div>
+    {% if p %}<nav aria-label="Atalhos de período" class="atalhos">{% for atalho in p.atalhos %}<a href="{{ atalho.url }}">{{ atalho.nome }}</a>{% endfor %}</nav>{% endif %}
+  </div>
+  {% if p %}<form method="post" action="/atualizar" id="formulario-atualizacao" class="acoes-atualizacao">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% for campo in ['codigo', 'de', 'ate', 'visualizacao'] %}<input type="hidden" name="{{ campo }}" value="{{ valores[campo] }}">{% endfor %}
+    <button type="submit" class="botao botao-secundario" id="atualizar-dados">Atualizar dados</button><span class="texto-auxiliar">Renova as consultas do painel, sem executar coleta.</span><span id="estado-atualizacao" role="status"></span>
+  </form>{% endif %}
+  {% if erro_filtro %}
+  <div class="mensagem mensagem-erro" id="erros-filtro" role="alert" aria-labelledby="titulo-erros-filtro" tabindex="-1" data-focar-erro>
+    <h3 id="titulo-erros-filtro">Revise os filtros</h3><p>{{ erro_filtro }}</p>
+    <ul>{% for campo, mensagem in erros_campos.items() %}<li><a href="#{{ 'aplicar-filtros' if campo == 'pagina' else campo }}">{{ {'codigo': 'Indicador', 'visualizacao': 'Visualização', 'de': 'Data inicial', 'ate': 'Data final', 'pagina': 'Página da tabela'}[campo] }}: {{ mensagem }}</a></li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  <form method="get" action="/" id="formulario-filtros" class="grade-filtros">
+    <div class="campo"><label for="codigo">Indicador</label>
+      <select id="codigo" name="codigo"{{ atributos_erro('codigo') }}>
+        {% if valores.codigo not in ['432', '433', '1'] %}<option selected value="{{ valores.codigo }}">Selecione um indicador</option>{% endif %}
+        {% for codigo, serie in series.items() %}<option value="{{ codigo }}"{% if valores.codigo == codigo|string %} selected{% endif %}>{{ serie[0] }}</option>{% endfor %}
+      </select>{{ mensagem_erro('codigo') }}
+    </div>
+    <div class="campo"><label for="visualizacao">Visualização</label><select id="visualizacao" name="visualizacao"{{ atributos_erro('visualizacao') }}>
+      {% for valor, nome in [('observacoes', 'Observações'), ('mes', 'Agregado mensal'), ('ano', 'Agregado anual')] %}<option value="{{ valor }}"{% if valores.visualizacao == valor %} selected{% endif %}>{{ nome }}</option>{% endfor %}
+    </select>{{ mensagem_erro('visualizacao') }}</div>
+    <div class="campo"><label for="de">Data inicial</label><input id="de" name="de" type="{{ tipos_datas.de }}" value="{{ valores.de }}" min="2020-01-01" max="{{ hoje }}" required{{ atributos_erro('de') }}>{{ mensagem_erro('de') }}</div>
+    <div class="campo"><label for="ate">Data final</label><input id="ate" name="ate" type="{{ tipos_datas.ate }}" value="{{ valores.ate }}" min="2020-01-01" max="{{ hoje }}" required{{ atributos_erro('ate') }}>{{ mensagem_erro('ate') }}</div>
+    <button type="submit" class="botao botao-primario" id="aplicar-filtros">Aplicar filtros</button>
+  </form>
+  <div class="rodape-filtros"><span>Períodos inclusivos · Atalhos em meses-calendário</span><span id="estado-consulta" role="status" aria-live="polite"></span></div>
+  {% if valores.visualizacao != 'observacoes' %}<p class="texto-auxiliar">Agregados são filtrados pela chave de período: primeiro dia do mês ou do ano. O início do filtro não é expandido automaticamente.</p>{% endif %}
+</section>

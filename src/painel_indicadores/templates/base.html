@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore o histórico da meta Selic, do IPCA mensal e do dólar comercial, com dados do Banco Central e referências explícitas.">
+  <title>Indicadores do Brasil — Selic, IPCA e dólar</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('estaticos', path='painel.css') }}">
+  <script src="{{ url_for('estaticos', path='vendor/plotly.min.js') }}" defer></script>
+  <script src="{{ url_for('estaticos', path='painel.js') }}" defer></script>
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo" tabindex="0">Pular para o conteúdo</a>
+  {% block conteudo %}{% endblock %}
+</body>
+</html>

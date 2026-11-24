@@ -1,0 +1,25 @@
+<section aria-labelledby="titulo-panorama" class="bloco-panorama">
+  <div class="cabecalho-secao">
+    <div><h2 id="titulo-panorama">Panorama econômico</h2>
+      <p class="texto-auxiliar">Último dado disponível do acervo, independente do filtro do gráfico.</p></div>
+    <span class="nota-fonte">Fonte: BCB / SGS</span>
+  </div>
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+    {% for card in p.cards %}
+    <article class="card-indicador serie-{{ card.codigo }}" aria-labelledby="titulo-card-{{ card.codigo }}">
+      <div class="flex items-center justify-between gap-3">
+        <h3 id="titulo-card-{{ card.codigo }}"><span class="marca-serie" aria-hidden="true"></span>{{ card.nome }}</h3>
+        <span class="codigo-sgs">{% if card.codigo == 1212 %}Composto{% else %}SGS {{ card.codigo }}{% endif %}</span>
+      </div>
+      <div class="valor-card">{{ card.valor | decimal_br(4 if card.codigo == 1 else 2) }}{% if card.valor is not none %}<span class="unidade-card">{{ card.unidade }}</span>{% endif %}</div>
+      <p class="referencia-card">Referência: <strong>{{ card.referencia.strftime('%m/%Y' if card.codigo in [433, 1212] else '%d/%m/%Y') if card.referencia else 'não disponível' }}</strong></p>
+      <p class="rotulo-ultimo">Último dado disponível</p>
+      {% if card.diferenca is not none %}
+      <p class="comparacao-card">{{ '+' if card.diferenca > 0 else '' }}{{ card.diferenca | decimal_br(4 if card.codigo == 1 else 2) }} {{ card.unidade_diferenca }} <span>em relação a {{ card.referencia_anterior.strftime('%m/%Y' if card.codigo == 433 else '%d/%m/%Y') }}</span></p>
+      {% endif %}
+      {% if card.aviso %}<p class="aviso-card">{{ card.aviso }}</p>
+      {% elif not card.cobertura or card.cobertura.completa is none %}<p class="cobertura-card">Cobertura da fonte não confirmada.</p>{% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
