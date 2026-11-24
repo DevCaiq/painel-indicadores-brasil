@@ -12,6 +12,10 @@ jobs:
   verificar:
     name: Testes offline, navegador e pacote
     runs-on: ubuntu-24.04
+    # Atualizar junto da versao resolvida de @playwright/test no package-lock.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble@sha256:1507cbfc550a63a6b7396791ca4f00df17beb56342d2447b3f106c306f525579
+      options: --ipc=host
     timeout-minutes: 20
     env:
       UV_PYTHON: '3.12'
@@ -54,8 +58,9 @@ jobs:
           node --check scripts/preparar-estaticos.mjs
           node --check playwright.config.mjs
           find testes/navegador -name '*.mjs' -exec node --check {} \;
-      - name: Instalar navegadores de teste
-        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Conferir versão dos navegadores incluídos na imagem
+        run: |
+          node -e "const versao = require('@playwright/test/package.json').version; if (versao !== '1.65.1') throw new Error('Atualize a imagem Playwright para a versão do lock: ' + versao); console.log('Imagem e Playwright compatíveis: ' + versao);"
       - name: Verificar interface com servidor offline
         run: npm run verificar:navegador
       - name: Construir e instalar wheel isolado
